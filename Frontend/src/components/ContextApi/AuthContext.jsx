@@ -6,10 +6,10 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {     
     const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get("token"));
-
+    const BASE_URL = process.env.BASE_URL;
     const signup = async (userData) => {
         try {
-            const response = await axios.post("http://localhost:3000/auth/api/signup", userData);
+            const response = await axios.post(`${BASE_URL}/auth/api/signup`, userData);
             if (response.data.token) {
                 Cookies.set("token", response.data.token, { expires: 7 });
                 setIsAuthenticated(true);
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (userData) => {
         try {
-            const response = await axios.post("http://localhost:3000/auth/api/login", userData);
+            const response = await axios.post(`${BASE_URL}/auth/api/login`, userData);
             if (response.data.token) {
                 Cookies.set("token", response.data.token, { expires: 7 });
                 setIsAuthenticated(true);
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     const messageSchedule = async (sender, receiver) => {
         try {
             const response = await axios.post(
-                "http://localhost:3000/auth/api/scheduleMessage",
+                `${BASE_URL}/auth/api/scheduleMessage`,
                 { sender, receiver } 
             );
             console.log("Message scheduled successfully:", response.data);

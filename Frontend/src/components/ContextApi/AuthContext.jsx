@@ -1,4 +1,4 @@
-import { React ,createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -6,7 +6,9 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {     
     const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get("token"));
-    const BASE_URL = "https://message-scheduler-swoa.onrender.com";
+    // const BASE_URL = "https://message-scheduler-swoa.onrender.com";
+    const BASE_URL = "http://localhost:3000";
+    
     const signup = async (userData) => {
         try {
             const response = await axios.post(`${BASE_URL}/auth/api/signup`, userData);
@@ -36,24 +38,17 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-
-    // MessageScheduling
-
     const messageSchedule = async (sender, receiver) => {
         try {
-            const response = await axios.post(
-                `${BASE_URL}/auth/api/scheduleMessage`,
-                { sender, receiver } 
-            );
+            const response = await axios.post(`${BASE_URL}/auth/api/scheduleMessage`, { sender, receiver });
             console.log("Message scheduled successfully:", response.data);
         } catch (error) {
-            console.error("Error in message scheduling:");
+            console.error("Error in message scheduling:", error);
         }
     };
     
-    
     return (
-        <AuthContext.Provider value={{ isAuthenticated, signup, login, logout,messageSchedule }}>
+        <AuthContext.Provider value={{ isAuthenticated, signup, login, logout, messageSchedule }}>
             {children}
         </AuthContext.Provider>
     );

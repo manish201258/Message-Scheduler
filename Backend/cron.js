@@ -1,49 +1,56 @@
-const cron = require("node-cron");
-const ScheduledMessage = require("./modules/scheduledMessageModel");
-const sendEmail = require("./Controllers/mailer");
-const dbConnect = require("./modules/dbConnect");
-require("dotenv").config();
+// const cron = require("node-cron");
+// const ScheduledMessage = require("./modules/scheduledMessageModel");
+// const sendEmail = require("./Controllers/mailer");
+// const dbConnect = require("./modules/dbConnect");
+// require("dotenv").config();
 
-async function startCron() {
-  try {
-    await dbConnect(); // Connect to MongoDB before cron starts
-    console.log("✅ Database connected, starting cron job...");
+// async function startCron() {
+//   try {
+//     await dbConnect(); // Connect to MongoDB before cron starts
+//     console.log("✅ Database connected, starting cron job...");
 
-    cron.schedule("* * * * *", async () => {
-      try {
-        const now = new Date();
-        now.setMilliseconds(0);
+//     // Run every minute instead of every 10 seconds
+//     cron.schedule("*/1 * * * *", async () => {
+//       try {
+//         console.log("🔍 Checking for scheduled messages...");
 
-        console.log("🔍 Checking for scheduled messages...");
-        const messagesToSend = await ScheduledMessage.find({
-          "receiver.scheduletime": { $lte: now },
-          status: "scheduled",
-        }).maxTimeMS(5000); // Prevent long waits
+//         const now = new Date();
+//         now.setMilliseconds(0);
 
-        for (const message of messagesToSend) {
-          console.log(`📨 Sending message to ${message.receiver.name}: ${message.sender.message}`);
+//         const messagesToSend = await ScheduledMessage.find(
+//           { "receiver.scheduletime": { $lte: now }, status: "scheduled" }
+//         ).maxTimeMS(5000) // Prevent long waits
+//          .limit(10); // Process in batches
 
-          const emailSent = await sendEmail(
-            message.receiver.contact,
-            "Project Showcase",
-            message.sender.message
-          );
+//         if (!messagesToSend.length) {
+//           console.log("✅ No messages to send.");
+//           return;
+//         }
 
-          await ScheduledMessage.updateOne(
-            { _id: message._id },
-            { $set: { status: emailSent ? "sent" : "failed" } }
-          );
+//         for (const message of messagesToSend) {
+//           console.log(`📨 Sending message to ${message.receiver.name}: ${message.sender.message}`);
 
-          console.log(`✅ Message ${emailSent ? "sent" : "failed"} to ${message.receiver.name}`);
-        }
-      } catch (error) {
-        console.error("❌ Error in processing scheduled messages:", error);
-      }
-    });
-  } catch (error) {
-    console.error("❌ Failed to start cron job:", error);
-  }
-}
+//           const emailSent = await sendEmail(
+//             message.receiver.contact,
+//             "Project Showcase",
+//             message.sender.message
+//           );
 
-// Start cron job after connecting to DB
-startCron();
+//           await ScheduledMessage.updateOne(
+//             { _id: message._id },
+//             { $set: { status: emailSent ? "sent" : "failed" } }
+//           );
+
+//           console.log(`✅ Message ${emailSent ? "sent" : "failed"} to ${message.receiver.name}`);
+//         }
+//       } catch (error) {
+//         console.error("❌ Error in processing scheduled messages:", error);
+//       }
+//     });
+//   } catch (error) {
+//     console.error("❌ Failed to start cron job:", error);
+//   }
+// }
+
+// // Start cron job after connecting to DB
+// startCron();

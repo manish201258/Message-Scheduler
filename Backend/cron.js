@@ -3,7 +3,7 @@ const ScheduledMessage = require("./modules/scheduledMessageModel");
 const sendEmail = require("./Controllers/mailer");
 require("dotenv").config();
 
-cron.schedule("*/10 * * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   try {
     const now = new Date();
     now.setMilliseconds(0);

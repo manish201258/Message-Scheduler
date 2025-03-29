@@ -1,4 +1,4 @@
-const generateToken = require("../../../Chat App/backend/controllers/generateToken");
+const generateToken = require("../Controllers/tokenGenerate");
 const user = require("../modules/userModel");
 const { tokenGenerate } = require("./tokenGenerate");
 

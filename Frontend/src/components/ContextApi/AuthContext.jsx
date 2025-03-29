@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {     
     const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get("token"));
-    const BASE_URL = process.env.BASE_URL;
+    const BASE_URL = "https://message-scheduler-swoa.onrender.com";
     const signup = async (userData) => {
         try {
             const response = await axios.post(`${BASE_URL}/auth/api/signup`, userData);

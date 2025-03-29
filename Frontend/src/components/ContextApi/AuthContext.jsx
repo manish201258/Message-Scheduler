@@ -6,8 +6,8 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {     
     const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get("token"));
-    // const BASE_URL = "https://message-scheduler-swoa.onrender.com";
-    const BASE_URL = "http://localhost:3000";
+    const BASE_URL = "https://message-scheduler-swoa.onrender.com";
+    // const BASE_URL = "http://localhost:3000";
     
     const signup = async (userData) => {
         try {
